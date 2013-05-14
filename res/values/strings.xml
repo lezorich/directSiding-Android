@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">directSIDING</string>
+    <string name="app_name_short">dSIDING</string>
+    <string name="action_settings">Configuración</string>
+    <string name="title_activity_web">Loading ...</string>
+
+    <!-- Strings de LoginActivity -->
+    <string name="Autor">Por Lukas Zorich (lezorich@uc.cl)</string>
+    <string name="EntrarButton">Entrar</string>
+    <string name="Usuario">Usuario UC</string>
+    <string name="Password">Contraseña</string>
+    <string name="GuardarDatos">Recordar</string>
+
+    <!-- Strings de ConfigActivity -->
+    <string name="RedirigirIngCursos">Redirigir siempre a Ing Cursos</string>
+    <string name="ConfigTitle">Opciones</string>
+    <string name="UsuariosRecordados">Usuario: </string>
+    <string name="action_about">Acerca de</string>
+    <string name="AlertDialogTitle">Acerca de</string>
+    <string name="AlertDialogMessage">La idea original de directSiding fue de Pedro Pablo Aste Kompe.\n\n
+        								Estamos en las siguientes plataformas:\n- Chrome: Pedro Pablo Aste Kompe (ppaste@uc.cl)\n- Firefox: Carlos Andrés Molina Avendaño (camolin3@uc.cl)\n- Android: Lukas Zorich (lezorich@uc.cl)\n\n 
+        								Para noticias y novedades de directSIDING, pueden ir a nuestra página de facebook: www.facebook.com/DirectSiding \n\n
+        								Ninguna de las contraseñas es guardada, robada ni nada de esas cosas, trust us.</string>
+
+    <!-- Strings de errores -->
+    <string name="ErrorConexion">Hubo un error de conexion</string>
+    <string name="LoginFailed">Datos de ingreso incorrectos</string>
+    <string name="title_activity_config">Configuracion</string>
+    <string name="hello_world">Hello world!</string>
+
+    <!-- String content desciption -->
+    <string name="ImageView_NavBack">Imagen que se usa para regresar al formulario del Login</string>
+    <string name="title_activity_start">StartActivity</string>
+    <string name="title_activity_init">InitActivity</string>
+    
+    <!-- Strings nombres actividades -->
+    <string name="LoginActivity">LoginActivity</string>
+    <string name="WebActivity">WebActivity</string>
+
+</resources>

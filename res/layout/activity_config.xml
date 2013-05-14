@@ -1,0 +1,140 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_color"
+    android:fillViewport="true"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:scrollbars="horizontal|vertical"
+    tools:context=".ConfigActivity" >
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <RelativeLayout
+            android:id="@+id/RelativeLayout_options"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/rounded_corner"
+            android:padding="@dimen/activity_vertical_margin" >
+
+            <CheckBox
+                android:id="@+id/checkBox_IngCursos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/textView_UsuarioRecordado"
+                android:layout_below="@+id/lineaConfig2"
+                android:layout_marginTop="@dimen/EspacioEntreElem"
+                android:text="@string/RedirigirIngCursos" />
+
+            <TextView
+                android:id="@+id/textView_LoginTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ConfigTitle"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <View
+                android:id="@+id/lineaConfig1"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_below="@id/textView_LoginTitle"
+                android:layout_marginTop="@dimen/EspacioEntreElem"
+                android:background="@color/GrisLinea" />
+
+            <TextView
+                android:id="@+id/textView_UsuarioRecordado"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/lineaConfig2"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@id/lineaConfig1"
+                android:layout_marginLeft="@dimen/activity_vertical_margin"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:layout_toRightOf="@+id/imageView_contentRemove"
+                android:gravity="center_vertical"
+                android:text="@string/UsuariosRecordados"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/textView_usuario"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/lineaConfig1"
+                android:layout_marginLeft="@dimen/EspacioEntreElem"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:layout_toLeftOf="@+id/imageView_contentRemove"
+                android:layout_toRightOf="@id/textView_UsuarioRecordado"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textStyle="bold" />
+
+            <View
+                android:id="@+id/lineaConfig2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/textView_usuario"
+                android:layout_marginTop="@dimen/EspacioEntreElem"
+                android:background="@color/GrisLinea" />
+
+            <ImageView
+                android:id="@+id/imageView_contentRemove"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/lineaConfig2"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/lineaConfig1"
+                android:layout_marginLeft="@dimen/EspacioEntreElem"
+                android:layout_marginRight="@dimen/EspacioEntreElem"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:scaleType="center"
+                android:src="@drawable/ic_content_remove"
+                android:visibility="invisible" />
+            
+			<View
+			    android:id="@+id/lineaConfig3"
+			    android:layout_width="match_parent"
+			    android:layout_height="1dp"
+			    android:layout_below="@id/checkBox_IngCursos"
+			    android:layout_marginTop="@dimen/EspacioEntreElem"
+			    android:background="@color/GrisLinea" />
+
+            <CheckBox
+                android:id="@+id/checkBox_AccAuto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/lineaConfig3"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/EspacioEntreElem"
+                android:text="Acceder automáticamente" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/textView_Version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:text="0.1"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/foot" />
+
+        <TextView
+            android:id="@+id/textView_AboutAuthor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:text="@string/Autor"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/foot" />
+
+    </RelativeLayout>
+
+</ScrollView>

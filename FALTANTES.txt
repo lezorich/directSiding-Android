@@ -1,0 +1,6 @@
+- intent de los link al browser
+- arreglar lo girar el celular
+- atras ir al historial
+
+- Ponerle el borrar usuario y el about
+- acceder automaticamente

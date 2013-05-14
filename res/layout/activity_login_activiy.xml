@@ -1,0 +1,90 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_color"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".LoginActivity" >
+
+    <EditText
+        android:id="@+id/EditText_user"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:hint="@string/Usuario"
+        android:inputType="textEmailAddress"
+        android:maxLines="@integer/MaxLines" >
+
+        <requestFocus />
+    </EditText>
+
+    <EditText
+        android:id="@+id/editText_Passwd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/EditText_user"
+        android:layout_alignRight="@+id/EditText_user"
+        android:layout_below="@+id/EditText_user"
+        android:layout_marginTop="@dimen/EspacioEntreElem"
+        android:ems="10"
+        android:hint="@string/Password"
+        android:inputType="textPassword" />
+
+    <CheckBox
+        android:id="@+id/checkBox_Recordar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/editText_Passwd"
+        android:layout_below="@+id/editText_Passwd"
+        android:layout_marginLeft="@dimen/EspacioEntreElem"
+        android:layout_marginTop="@dimen/EspacioEntreElem"
+        android:text="@string/GuardarDatos" />
+
+    <Button
+        android:id="@+id/button_entrar"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/Minimo"
+        android:layout_alignBaseline="@+id/checkBox_Recordar"
+        android:layout_alignBottom="@+id/checkBox_Recordar"
+        android:layout_alignLeft="@+id/editText_Passwd"
+        android:layout_toLeftOf="@+id/checkBox_Recordar"
+        android:text="@string/EntrarButton" />
+
+    <TextView
+        android:id="@+id/textView_Autor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="@string/Autor"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/foot" />
+
+    <TextView
+        android:id="@+id/textView_LoginTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/EditText_user"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="70dp"
+        android:drawableLeft="@drawable/ic_launcher"
+        android:drawablePadding="@dimen/EspacioEntreElem"
+        android:text="@string/app_name"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="35sp" />
+
+    <ImageButton
+        android:id="@+id/imageButton_Settings"
+        android:layout_width="@dimen/Minimo"
+        android:layout_height="@dimen/Minimo"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_action_settings" />
+
+</RelativeLayout>
