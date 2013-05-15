@@ -11,24 +11,20 @@ import java.net.URL;
 import org.apache.http.cookie.Cookie;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.DownloadManager;
-import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.NavUtils;
+import android.support.v4.app.NotificationCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.util.Log;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.DownloadListener;
@@ -42,17 +38,16 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
-import com.directsiding.Interfaces.ISharedPrefs;
 
 @SuppressLint("setJavaScriptEnabled")
 public class WebActivity extends SherlockActivity {
 	
 	private WebView webView; 
-	private DownloadManager downloadManager;
-	private long downloadReference;
 	
-	private ProgressDialog downloadDialog;
+	private NotificationManager mNotifyManager;
+	private NotificationCompat.Builder mBuilder;
 	
+	private static int actualNotifyId = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -80,13 +75,6 @@ public class WebActivity extends SherlockActivity {
 			cookieManager.setCookie(LoginActivity.POST_URL, cookieString);
 			CookieSyncManager.getInstance().sync();
 		}
-		
-		downloadDialog = new ProgressDialog(this);
-		downloadDialog.setIndeterminate(false);
-		downloadDialog.setMax(100);
-		downloadDialog.setProgress(ProgressDialog.STYLE_HORIZONTAL);
-		downloadDialog.setTitle("Descargando ...");
-		downloadDialog.setCancelable(true);
 		
 		
 		webView = (WebView)findViewById(R.id.webView_ing);
@@ -124,13 +112,12 @@ public class WebActivity extends SherlockActivity {
 		webView.setDownloadListener(new DownloadListener() {
 			public void onDownloadStart(String url, String userAgent,
 					String contentDisposition, String mimetype, long contentLength) {
-				new DownloadFile().execute(url);	
+				Toast.makeText(WebActivity.this, "Iniciando descarga ...", Toast.LENGTH_SHORT).show();
+				new DownloadFile(WebActivity.actualNotifyId++).execute(url);	
 			}
 		});
 		webView.loadUrl(url);
 	}
-	
-	
 	
 	@Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -162,47 +149,29 @@ public class WebActivity extends SherlockActivity {
     	else
     		super.onBackPressed();
     }
-    
-    private BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
-		
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			if (intent.getAction().equals(DownloadManager.ACTION_DOWNLOAD_COMPLETE)) {
-				long referenceId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-				if (downloadReference == referenceId) {
-					DownloadManager.Query query = new DownloadManager.Query();
-					query.setFilterById(referenceId);
-					
-					Cursor c = downloadManager.query(query);
-					
-					if (c.moveToFirst()) {
-						Uri uri = Uri.parse(c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI)));
-						//Intent i = new Intent(Intent.ACTION_VIEW, uri);
-						//context.startActivity(i);
-						/*Toast.makeText(context, "status: " + c.getString(c.getColumnIndex(DownloadManager.COLUMN_STATUS))
-								+ " file type: " + c.getString(c.getColumnIndex(DownloadManager.COLUMN_MEDIA_TYPE))
-								+ " loc: " + c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME))
-								+ " a: " + c.getString(c.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
-								, Toast.LENGTH_SHORT).show();*/
-						Log.d("file type:", c.getString(c.getColumnIndex(DownloadManager.COLUMN_MEDIA_TYPE)));
-					}
-				}
-			}
-		}
-	};
 	
 	/**
 	 * Clase que se encarga de descargar el archivo. El proceso devuelve un String[] de dos elementos. 
-	 * La primera posicion es el tipo de archivo y la segunda es el path en donde se descargó el archivo.
+	 * La primera posicion es el tipo de archivo y la segunda es el path en donde se descargï¿½ el archivo.
 	 * @author Lukas Zorich
 	 *
 	 */
-	private class DownloadFile extends AsyncTask<String, Integer, String[]> {
+	private class DownloadFile extends AsyncTask<String, String, String[]> {
+		
+		private int _notifyId;
+		
+		public DownloadFile(int notifyId) {
+			this._notifyId = notifyId;
+		}
 		
 		@Override
 		protected void onPreExecute() {
-			downloadDialog.setProgress(0);
-			downloadDialog.show();
+			mNotifyManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+			mBuilder = new NotificationCompat.Builder(WebActivity.this);
+			mBuilder.setContentTitle("Descargando archivo ...")
+					.setContentText("")
+					.setSmallIcon(R.drawable.ic_notification_download)
+					.setProgress(0,0, true);
 		}
 
 		@Override
@@ -218,56 +187,59 @@ public class WebActivity extends SherlockActivity {
 		        urlConnection.connect();
 		        
 		        String aux = urlConnection.getHeaderField("Content-Disposition").split("; ")[1];
-		        String filename = aux.substring("filename=\"".length(), aux.length() - 1);
-		        
+		        String filename = aux.substring("filename=\"".length(), aux.length() - 1);		        
 		        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), filename);
-	
+		        
+		        // hacemos la notificacion
+		        mBuilder.setContentText(filename + " - 0.0 Mb");
+		        Intent notificationIntent = new Intent(Intent.ACTION_VIEW);
+		        notificationIntent.setDataAndType(Uri.fromFile(file), urlConnection.getContentType());
+		        PendingIntent pendingIntent = PendingIntent.getActivity(WebActivity.this, 0, notificationIntent, 0);
+		        mBuilder.setContentIntent(pendingIntent);
+		        mNotifyManager.notify(_notifyId, mBuilder.build());
+		        
 		        FileOutputStream fileOutput = new FileOutputStream(file);
 		        
 		        InputStream inputStream = urlConnection.getInputStream();
 	
-		        int totalSize = urlConnection.getContentLength();
-
 		        int downloadedSize = 0;
-	
-
 		        byte[] buffer = new byte[1024];
 		        int bufferLength = 0; 
-	
 
 		        while ( (bufferLength = inputStream.read(buffer)) > 0 ) {
 		                fileOutput.write(buffer, 0, bufferLength);
 		                downloadedSize += bufferLength;
-		                publishProgress(downloadedSize, totalSize);
+		                
+		                // actualizamos el tamaÃ±o descargado
+				        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+				        	mBuilder.setContentText(filename + " - " + String.format("%.1f", downloadedSize/(1000.0*1000)) + " Mb");
+				        	mNotifyManager.notify(_notifyId, mBuilder.build());
+				        }
 		        }
 
 		        fileOutput.close();
-		        return new String[] {urlConnection.getContentType(), file.getAbsolutePath()};
+		        return new String[] {urlConnection.getContentType(), file.getAbsolutePath(), "" + downloadedSize/(1000.0*1000)};
 			} catch (MalformedURLException e) {
-			        return null;
+				return null;
 			} catch (IOException e) {
-			        return null;
+				return null;
+			} catch (Exception e) {
+				return null;
 			}
 		}
 		
 		@Override
-		protected void onProgressUpdate(Integer... values) {
-			super.onProgressUpdate(values);
-			downloadDialog.setProgress(values[0]*100/values[1]);
-		}
-		
-		@Override
 		protected void onPostExecute(String[] result) {
-			downloadDialog.dismiss();
 			if (result != null) {
 				File file = new File(result[1]); 
 	            if(file.exists()) 
 	            {
-	                Uri path = Uri.fromFile(file); 
-	                Intent openFileIntent = new Intent(Intent.ACTION_VIEW);
-	                openFileIntent.setDataAndType(path, result[0]);
-	                //pdfIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	                startActivity(openFileIntent);
+	            	mBuilder.setContentTitle(file.getName())
+	            			.setContentText("Descarga finalizada")
+	            			.setAutoCancel(true)
+	            			.setProgress(0, 0, false);
+	            	mNotifyManager.notify(_notifyId, mBuilder.build());
+	            	Toast.makeText(WebActivity.this, "Descarga finalizada", Toast.LENGTH_SHORT).show();
 	            }
 			}
 			else{

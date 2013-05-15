@@ -920,7 +920,8 @@ containing a value of this type.
         public static final int ic_action_settings_light=0x7f020073;
         public static final int ic_content_remove=0x7f020074;
         public static final int ic_launcher=0x7f020075;
-        public static final int rounded_corner=0x7f020076;
+        public static final int ic_notification_download=0x7f020076;
+        public static final int rounded_corner=0x7f020077;
     }
     public static final class id {
         public static final int EditText_user=0x7f04003e;

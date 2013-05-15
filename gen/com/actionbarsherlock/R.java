@@ -158,27 +158,27 @@ public final class R {
 		public static final int abs__bright_foreground_holo_dark = 0x7f060002;
 		public static final int abs__bright_foreground_holo_light = 0x7f060003;
 		public static final int abs__primary_text_holo_dark = 0x7f06000a;
-		public static final int abs__bright_foreground_disabled_holo_light = 0x7f060005;
+		public static final int abs__primary_text_disable_only_holo_dark = 0x7f060008;
 		public static final int abs__bright_foreground_disabled_holo_dark = 0x7f060004;
 		public static final int abs__background_holo_light = 0x7f060001;
-		public static final int abs__primary_text_disable_only_holo_dark = 0x7f060008;
+		public static final int abs__bright_foreground_disabled_holo_light = 0x7f060005;
 		public static final int abs__primary_text_holo_light = 0x7f06000b;
 		public static final int abs__background_holo_dark = 0x7f060000;
 	}
 	public static final class string {
 		public static final int abs__action_bar_up_description = 0x7f090001;
-		public static final int abs__searchview_description_clear = 0x7f09000a;
-		public static final int abs__action_mode_done = 0x7f090003;
-		public static final int abs__searchview_description_voice = 0x7f09000c;
-		public static final int abs__searchview_description_query = 0x7f090009;
-		public static final int abs__shareactionprovider_share_with = 0x7f090006;
-		public static final int abs__action_bar_home_description = 0x7f090000;
-		public static final int abs__searchview_description_search = 0x7f090008;
-		public static final int abs__activity_chooser_view_see_all = 0x7f090004;
 		public static final int abs__activitychooserview_choose_application = 0x7f090005;
 		public static final int abs__action_menu_overflow_description = 0x7f090002;
+		public static final int abs__searchview_description_clear = 0x7f09000a;
+		public static final int abs__searchview_description_voice = 0x7f09000c;
+		public static final int abs__action_mode_done = 0x7f090003;
 		public static final int abs__searchview_description_submit = 0x7f09000b;
+		public static final int abs__searchview_description_query = 0x7f090009;
 		public static final int abs__shareactionprovider_share_with_application = 0x7f090007;
+		public static final int abs__shareactionprovider_share_with = 0x7f090006;
+		public static final int abs__searchview_description_search = 0x7f090008;
+		public static final int abs__action_bar_home_description = 0x7f090000;
+		public static final int abs__activity_chooser_view_see_all = 0x7f090004;
 	}
 	public static final class layout {
 		public static final int abs__list_menu_item_radio = 0x7f03000c;
@@ -402,10 +402,10 @@ public final class R {
 		public static final int abs__ic_search_api_holo_light = 0x7f020033;
 		public static final int abs__cab_background_bottom_holo_light = 0x7f02001b;
 		public static final int abs__btn_cab_done_holo_dark = 0x7f020016;
+		public static final int abs__tab_selected_holo = 0x7f020060;
 		public static final int abs__cab_background_bottom_holo_dark = 0x7f02001a;
 		public static final int abs__ab_transparent_dark_holo = 0x7f02000e;
 		public static final int abs__progress_horizontal_holo_light = 0x7f02004a;
-		public static final int abs__tab_selected_holo = 0x7f020060;
 		public static final int abs__ic_ab_back_holo_dark = 0x7f02001e;
 		public static final int abs__ic_menu_share_holo_dark = 0x7f020030;
 		public static final int abs__ab_stacked_solid_light_holo = 0x7f02000b;
@@ -569,8 +569,8 @@ public final class R {
 		public static final int progressBarStyle = 0x7f010052;
 		public static final int textAppearanceSearchResultTitle = 0x7f010030;
 		public static final int subtitle = 0x7f01004c;
-		public static final int actionMenuTextColor = 0x7f010011;
 		public static final int actionDropDownStyle = 0x7f010039;
+		public static final int actionMenuTextColor = 0x7f010011;
 	}
 	public static final class bool {
 		public static final int abs__config_allowActionMenuItemTextWithIcon = 0x7f050005;
@@ -585,13 +585,13 @@ public final class R {
 		public static final int abs__action_bar_subtitle_text_size = 0x7f070004;
 		public static final int abs__action_bar_icon_vertical_padding = 0x7f070002;
 		public static final int abs__dropdownitem_icon_width = 0x7f07000a;
-		public static final int abs__action_button_min_width = 0x7f070007;
 		public static final int abs__action_bar_subtitle_top_margin = 0x7f070005;
+		public static final int abs__action_button_min_width = 0x7f070007;
 		public static final int abs__action_bar_default_height = 0x7f070001;
 		public static final int abs__dropdownitem_text_padding_left = 0x7f070008;
 		public static final int abs__dialog_min_width_minor = 0x7f07000e;
-		public static final int abs__dialog_min_width_major = 0x7f07000d;
 		public static final int abs__dropdownitem_text_padding_right = 0x7f070009;
+		public static final int abs__dialog_min_width_major = 0x7f07000d;
 		public static final int abs__search_view_text_min_width = 0x7f07000b;
 		public static final int abs__search_view_preferred_width = 0x7f07000c;
 		public static final int abs__action_bar_subtitle_bottom_margin = 0x7f070006;

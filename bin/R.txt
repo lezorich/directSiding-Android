@@ -251,7 +251,8 @@ int drawable ic_action_settings 0x7f020072
 int drawable ic_action_settings_light 0x7f020073
 int drawable ic_content_remove 0x7f020074
 int drawable ic_launcher 0x7f020075
-int drawable rounded_corner 0x7f020076
+int drawable ic_notification_download 0x7f020076
+int drawable rounded_corner 0x7f020077
 int id EditText_user 0x7f04003e
 int id RelativeLayout_options 0x7f040032
 int id abs__action_bar 0x7f040020

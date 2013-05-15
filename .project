@@ -3,6 +3,7 @@
 	<name>DirectSIDING</name>
 	<comment></comment>
 	<projects>
+		<project>actionbarsherlock</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
