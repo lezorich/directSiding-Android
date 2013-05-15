@@ -1,6 +1,3 @@
-- intent de los link al browser
-- arreglar lo girar el celular
-- atras ir al historial
-
-- Ponerle el borrar usuario y el about
-- acceder automaticamente
+- Ponerle el borrar usuario
+- ver que pasa cuando se resume ,la aplicacion
+- Eliminar los archivos que se descargaron
