@@ -921,7 +921,14 @@ containing a value of this type.
         public static final int ic_content_remove=0x7f020074;
         public static final int ic_launcher=0x7f020075;
         public static final int ic_notification_download=0x7f020076;
-        public static final int rounded_corner=0x7f020077;
+        public static final int notification_download_animation=0x7f020077;
+        public static final int rounded_corner=0x7f020078;
+        public static final int stat_sys_download_anim0=0x7f020079;
+        public static final int stat_sys_download_anim1=0x7f02007a;
+        public static final int stat_sys_download_anim2=0x7f02007b;
+        public static final int stat_sys_download_anim3=0x7f02007c;
+        public static final int stat_sys_download_anim4=0x7f02007d;
+        public static final int stat_sys_download_anim5=0x7f02007e;
     }
     public static final class id {
         public static final int EditText_user=0x7f04003e;
@@ -997,6 +1004,7 @@ containing a value of this type.
         public static final int wrap_content=0x7f040000;
     }
     public static final class integer {
+        public static final int DownloadAnimationDuration=0x7f080002;
         public static final int MaxLines=0x7f080001;
         public static final int abs__max_action_buttons=0x7f080000;
     }

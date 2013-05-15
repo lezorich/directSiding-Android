@@ -252,7 +252,14 @@ int drawable ic_action_settings_light 0x7f020073
 int drawable ic_content_remove 0x7f020074
 int drawable ic_launcher 0x7f020075
 int drawable ic_notification_download 0x7f020076
-int drawable rounded_corner 0x7f020077
+int drawable notification_download_animation 0x7f020077
+int drawable rounded_corner 0x7f020078
+int drawable stat_sys_download_anim0 0x7f020079
+int drawable stat_sys_download_anim1 0x7f02007a
+int drawable stat_sys_download_anim2 0x7f02007b
+int drawable stat_sys_download_anim3 0x7f02007c
+int drawable stat_sys_download_anim4 0x7f02007d
+int drawable stat_sys_download_anim5 0x7f02007e
 int id EditText_user 0x7f04003e
 int id RelativeLayout_options 0x7f040032
 int id abs__action_bar 0x7f040020
@@ -324,6 +331,7 @@ int id textView_usuario 0x7f040039
 int id useLogo 0x7f040004
 int id webView_ing 0x7f040044
 int id wrap_content 0x7f040000
+int integer DownloadAnimationDuration 0x7f080002
 int integer MaxLines 0x7f080001
 int integer abs__max_action_buttons 0x7f080000
 int layout abs__action_bar_home 0x7f030000

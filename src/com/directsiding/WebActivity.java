@@ -18,9 +18,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.SystemClock;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.NotificationCompat;
 import android.text.Spannable;
@@ -48,6 +48,10 @@ public class WebActivity extends SherlockActivity {
 	private NotificationCompat.Builder mBuilder;
 	
 	private static int actualNotifyId = 0;
+	
+	private static final int[] downloadAnimationIcons = { R.drawable.stat_sys_download_anim0, 
+		R.drawable.stat_sys_download_anim1, R.drawable.stat_sys_download_anim2, R.drawable.stat_sys_download_anim3,
+		R.drawable.stat_sys_download_anim4, R.drawable.stat_sys_download_anim5 };
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -151,17 +155,21 @@ public class WebActivity extends SherlockActivity {
     }
 	
 	/**
-	 * Clase que se encarga de descargar el archivo. El proceso devuelve un String[] de dos elementos. 
-	 * La primera posicion es el tipo de archivo y la segunda es el path en donde se descarg� el archivo.
+	 * Clase que se encarga de descargar el archivo. El proceso devuelve un String[] de tres elementos. 
+	 * El primer elemento es el tipo de archivo, el segunda es el path en donde se descargo el archivo y el tercero la cantidad descargada.
 	 * @author Lukas Zorich
 	 *
 	 */
 	private class DownloadFile extends AsyncTask<String, String, String[]> {
 		
 		private int _notifyId;
+		private int icono;
+		private long lastMilli;
+		private static final int DOWNLOAD_ANIMATION_UPDATE = 1000;
 		
 		public DownloadFile(int notifyId) {
 			this._notifyId = notifyId;
+			icono = 0;
 		}
 		
 		@Override
@@ -170,8 +178,9 @@ public class WebActivity extends SherlockActivity {
 			mBuilder = new NotificationCompat.Builder(WebActivity.this);
 			mBuilder.setContentTitle("Descargando archivo ...")
 					.setContentText("")
-					.setSmallIcon(R.drawable.ic_notification_download)
+					.setSmallIcon(downloadAnimationIcons[0])
 					.setProgress(0,0, true);
+			lastMilli = SystemClock.elapsedRealtime();
 		}
 
 		@Override
@@ -210,11 +219,13 @@ public class WebActivity extends SherlockActivity {
 		                fileOutput.write(buffer, 0, bufferLength);
 		                downloadedSize += bufferLength;
 		                
-		                // actualizamos el tamaño descargado
-				        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-				        	mBuilder.setContentText(filename + " - " + String.format("%.1f", downloadedSize/(1000.0*1000)) + " Mb");
-				        	mNotifyManager.notify(_notifyId, mBuilder.build());
-				        }
+		                // actualizamos el tamaño descargado en la notificacion y actualizamos el icono con la animación
+		                if (SystemClock.elapsedRealtime() - lastMilli >= DOWNLOAD_ANIMATION_UPDATE) {
+		                	mBuilder.setContentText(filename + " - " + String.format("%.1f", downloadedSize/(1000.0*1000)) + " Mb")
+		                			.setSmallIcon(downloadAnimationIcons[(++icono) % downloadAnimationIcons.length]);
+		                	mNotifyManager.notify(_notifyId, mBuilder.build());
+		                	lastMilli = SystemClock.elapsedRealtime();
+		                }
 		        }
 
 		        fileOutput.close();
@@ -235,9 +246,14 @@ public class WebActivity extends SherlockActivity {
 	            if(file.exists()) 
 	            {
 	            	mBuilder.setContentTitle(file.getName())
-	            			.setContentText("Descarga finalizada")
+	            			.setContentText("Descarga finalizada - " + result[2])
+	            			.setSmallIcon(downloadAnimationIcons[0])
 	            			.setAutoCancel(true)
 	            			.setProgress(0, 0, false);
+			        /*Intent notificationIntent = new Intent(Intent.ACTION_VIEW);
+			        notificationIntent.setDataAndType(Uri.fromFile(file), result[0]);
+			        PendingIntent pendingIntent = PendingIntent.getActivity(WebActivity.this, 0, notificationIntent, 0);
+			        mBuilder.setContentIntent(pendingIntent);*/
 	            	mNotifyManager.notify(_notifyId, mBuilder.build());
 	            	Toast.makeText(WebActivity.this, "Descarga finalizada", Toast.LENGTH_SHORT).show();
 	            }
