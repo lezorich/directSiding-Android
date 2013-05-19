@@ -25,12 +25,18 @@ import android.support.v4.app.NavUtils;
 import android.support.v4.app.NotificationCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.RotateAnimation;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.DownloadListener;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -43,6 +49,8 @@ import com.actionbarsherlock.view.Window;
 public class WebActivity extends SherlockActivity {
 	
 	private WebView webView; 
+	private LayoutInflater inflater;
+	private ImageView loadingImageView;
 	
 	private NotificationManager mNotifyManager;
 	private NotificationCompat.Builder mBuilder;
@@ -52,6 +60,11 @@ public class WebActivity extends SherlockActivity {
 	private static final int[] downloadAnimationIcons = { R.drawable.stat_sys_download_anim0, 
 		R.drawable.stat_sys_download_anim1, R.drawable.stat_sys_download_anim2, R.drawable.stat_sys_download_anim3,
 		R.drawable.stat_sys_download_anim4, R.drawable.stat_sys_download_anim5 };
+	
+	private static enum EstadoWebView { CargandoPagina, NoCargandoPagina };
+	private EstadoWebView estadoWebView;
+	
+	private long lastTimeStamp;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,17 +72,26 @@ public class WebActivity extends SherlockActivity {
 		this.requestWindowFeature(Window.FEATURE_PROGRESS);
 		setContentView(R.layout.activity_web);
 		
+		// Le ponemos la font Signika al titulo del Action Bar
 		SpannableString s = new SpannableString(getString(R.string.app_name));
 		s.setSpan(new TypefaceSpan(this, LoginActivity.PATH_SIGNIKA_FONT), 0, s.length(),
 		        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
+		
+		// Agregamos lo necesario al Action Bar
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.setTitle(s);
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setHomeButtonEnabled(true);
+        
+        // Para la animación de cargando
+        inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        loadingImageView = (ImageView) inflater.inflate(R.layout.loading_action_view, null);
+        
 		
+        // Obtenemos la url a la que el usuario va a ingresar
 		String url = getIntent().getExtras().getString(LoginActivity.EXTRA_URL);
 		
+		// Obtenemos la cookie y la agregamos al webview
 		Cookie sessionCookie = LoginOpActivity.cookie;
 		CookieSyncManager.createInstance(this);
 		CookieManager cookieManager = CookieManager.getInstance();
@@ -80,7 +102,7 @@ public class WebActivity extends SherlockActivity {
 			CookieSyncManager.getInstance().sync();
 		}
 		
-		
+		// Configuración del web view
 		webView = (WebView)findViewById(R.id.webView_ing);
 		//webView.getSettings().setBuiltInZoomControls(true);
 		webView.getSettings().setJavaScriptEnabled(true);
@@ -91,27 +113,7 @@ public class WebActivity extends SherlockActivity {
 			}
 		});
 		
-		webView.setWebViewClient(new WebViewClient() {
-			@Override
-			public boolean shouldOverrideUrlLoading(WebView view, String url) {
-				if (url.endsWith("logout.phtml")) { // si pone salir en el SIDING, volvemos a la LoginActivity
-					NavUtils.navigateUpFromSameTask((Activity)view.getContext());
-					return true;
-				}
-				else if (url.equals("http://www.ing.puc.cl/")) { // si entra a esa pagina, es porque fallo el login (datos incorrectos)
-					Toast.makeText(getApplicationContext(), R.string.LoginFailed, Toast.LENGTH_SHORT).show();
-					startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-					return true;
-				}
-				else if (!url.startsWith("https://intrawww.ing.puc.cl/siding")) { // si abre un link fuera del dominio del SIDING, lo abro con el browser
-					Uri uri = Uri.parse(url);
-					Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-					startActivity(intent);
-					return true;
-				}
-				return false;
-			}
-		});
+		webView.setWebViewClient(new DirectSidingWebViewClient());
 		
 		webView.setDownloadListener(new DownloadListener() {
 			public void onDownloadStart(String url, String userAgent,
@@ -121,6 +123,98 @@ public class WebActivity extends SherlockActivity {
 			}
 		});
 		webView.loadUrl(url);
+		
+		estadoWebView = EstadoWebView.NoCargandoPagina;
+		
+		lastTimeStamp = SystemClock.elapsedRealtime();
+	}
+	
+	private class DirectSidingWebViewClient extends WebViewClient {
+		/* @Override
+		public void onPageStarted(WebView view, String url, android.graphics.Bitmap favicon) {
+			super.onPageFinished(view, url);
+			
+			estadoWebView = EstadoWebView.CargandoPagina;
+			supportInvalidateOptionsMenu();
+			
+			//menu.findItem().setActionView(loadingImageView);
+			
+		}
+		
+		@Override
+		public void onPageFinished(WebView view, String url) {
+			super.onPageFinished(view, url);
+			
+			MenuItem i = menu.findItem(R.id.action_loading);
+			i.setVisible(false);
+			
+			estadoWebView = EstadoWebView.NoCargandoPagina;
+			supportInvalidateOptionsMenu();
+		} */
+		
+		@Override
+		public boolean shouldOverrideUrlLoading(WebView view, String url) {
+			if (url.endsWith("logout.phtml")) { // si pone salir en el SIDING, volvemos a la LoginActivity
+				NavUtils.navigateUpFromSameTask((Activity)view.getContext());
+				return true;
+			}
+			else if (url.equals("http://www.ing.puc.cl/")) { // si entra a esa pagina, es porque fallo el login (datos incorrectos)
+				Toast.makeText(getApplicationContext(), R.string.LoginFailed, Toast.LENGTH_SHORT).show();
+				startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+				return true;
+			}
+			else if (!url.startsWith("https://intrawww.ing.puc.cl/siding")) { // si abre un link fuera del dominio del SIDING, lo abro con el browser
+				Uri uri = Uri.parse(url);
+				Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+				startActivity(intent);
+				return true;
+			}
+			return false;
+		}
+	}
+	
+	/*@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		MenuItem mItem = menu.getItem(0);
+		if (estadoWebView == EstadoWebView.CargandoPagina) 
+		{
+			/*mItem.setVisible(true);
+			Animation rotation = AnimationUtils.loadAnimation(WebActivity.this, R.anim.loading_anim);
+			rotation.setRepeatCount(Animation.INFINITE);
+			loadingImageView.startAnimation(rotation);
+			mItem.setActionView(loadingImageView);
+		}
+		else {
+			View v = mItem.getActionView();
+			if (v != null) {
+				mItem.getActionView().clearAnimation();
+				mItem.setActionView(null);
+			}
+			mItem.setVisible(false);
+			
+		}
+		
+		
+		return true;
+	}*/
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		
+		// Si la actividad estubo inactiva mas de dos horas, el SIDING deslogea automaticamente al usuario,
+		// entonces para que no pase eso, iniciamos la InitActivity para que se autologee
+		if (SystemClock.elapsedRealtime() - lastTimeStamp > 3600000) {
+			startActivity(new Intent(this, InitActivity.class));
+			finish();
+		}
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		
+		lastTimeStamp = SystemClock.elapsedRealtime();
 	}
 	
 	@Override
@@ -142,6 +236,7 @@ public class WebActivity extends SherlockActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	getSupportMenuInflater().inflate(R.menu.web, menu);
+    	
     	
         return true;
     }
@@ -165,7 +260,7 @@ public class WebActivity extends SherlockActivity {
 		private int _notifyId;
 		private int icono;
 		private long lastMilli;
-		private static final int DOWNLOAD_ANIMATION_UPDATE = 1000;
+		private static final int DOWNLOAD_ANIMATION_UPDATE = 500;
 		
 		public DownloadFile(int notifyId) {
 			this._notifyId = notifyId;

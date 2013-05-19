@@ -4,6 +4,7 @@
     <string name="app_name">directSIDING</string>
     <string name="app_name_short">dSIDING</string>
     <string name="action_settings">Configuración</string>
+    <string name="action_loading">Loading</string>
     <string name="title_activity_web">Loading ...</string>
 
     <!-- Strings de LoginActivity -->

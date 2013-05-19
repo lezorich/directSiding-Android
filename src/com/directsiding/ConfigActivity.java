@@ -12,6 +12,7 @@ import android.util.Base64;
 import android.view.View;
 import android.view.Window;
 import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,8 +42,8 @@ public class ConfigActivity extends SherlockActivity implements ISharedPrefs {
         
         SharedPreferences prefs = getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE);
         if (prefs.getBoolean(RECORDAR_PREF, false)) {
-        	((ImageView)findViewById(R.id.imageView_contentRemove)).setVisibility(View.VISIBLE);
-        	((TextView)findViewById(R.id.textView_usuario)).setText(prefs.getString(USUARIO_PREF, ""));
+        	((ImageButton)findViewById(R.id.ImageButton_delete)).setVisibility(View.VISIBLE);
+        	((TextView)findViewById(R.id.textView_usuario)).setText(prefs.getString(USUARIO_PREF, "UsuarioUc"));
         }
 	
 		boxIngCursos = (CheckBox)findViewById(R.id.checkBox_IngCursos);
@@ -62,7 +63,33 @@ public class ConfigActivity extends SherlockActivity implements ISharedPrefs {
 		
 		textView_version.setText(version);
 		
+		ImageButton delete = (ImageButton)findViewById(R.id.ImageButton_delete);
+		delete.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				resetUserData(v);
+			}
+		});
+		
 		previousActivity = getIntent().getExtras().getString(DirectSIDING.EXTRA_WHICH_ACTIVITY);
+	}
+	
+	private void resetUserData(View v) {
+		SharedPreferences prefs = getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putBoolean(ENTRARAUTO_PREF, false);
+		editor.putBoolean(INGCURSOS_PREF, false);
+		editor.putBoolean(RECORDAR_PREF, false);
+		editor.putString(USUARIO_PREF, "UsuarioUC");
+		editor.putString(PASSWD_PREF, "password");
+		
+		((TextView)findViewById(R.id.textView_usuario)).setVisibility(View.INVISIBLE);
+		v.setVisibility(View.VISIBLE);
+		boxIngCursos.setChecked(false);	
+		boxAccAuto.setChecked(false);
+		
+		editor.commit();
 	}
 	
 	@Override

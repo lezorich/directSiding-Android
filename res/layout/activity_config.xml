@@ -57,7 +57,7 @@
                 android:layout_below="@id/lineaConfig1"
                 android:layout_marginLeft="@dimen/activity_vertical_margin"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:layout_toRightOf="@+id/imageView_contentRemove"
+                android:layout_toRightOf="@+id/ImageButton_delete"
                 android:gravity="center_vertical"
                 android:text="@string/UsuariosRecordados"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -69,7 +69,7 @@
                 android:layout_below="@id/lineaConfig1"
                 android:layout_marginLeft="@dimen/EspacioEntreElem"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:layout_toLeftOf="@+id/imageView_contentRemove"
+                android:layout_toLeftOf="@+id/ImageButton_delete"
                 android:layout_toRightOf="@id/textView_UsuarioRecordado"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textStyle="bold" />
@@ -82,8 +82,8 @@
                 android:layout_marginTop="@dimen/EspacioEntreElem"
                 android:background="@color/GrisLinea" />
 
-            <ImageView
-                android:id="@+id/imageView_contentRemove"
+            <ImageButton
+                android:id="@+id/ImageButton_delete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_above="@id/lineaConfig2"
@@ -92,8 +92,9 @@
                 android:layout_marginLeft="@dimen/EspacioEntreElem"
                 android:layout_marginRight="@dimen/EspacioEntreElem"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:background="@android:color/background_light"
                 android:scaleType="center"
-                android:src="@drawable/ic_content_remove"
+                android:src="@drawable/ic_delete"
                 android:visibility="invisible" />
             
 			<View

@@ -1,8 +1,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-
-    <item
+        
+	<!--<item android:id="@+id/action_loading"
+        android:showAsAction="always"
+        android:icon="@drawable/ic_spinner"
+        android:title="@string/action_loading"
+        android:visible="false" />-->
+	
+	<item
         android:id="@+id/action_settings"
-        android:showAsAction="ifRoom"
+        android:showAsAction="always"
         android:icon="@drawable/ic_action_settings_light"
         android:title="@string/action_settings"/>
 
