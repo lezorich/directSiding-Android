@@ -1,3 +1,0 @@
-- Ponerle el borrar usuario
-- ver que pasa cuando se resume ,la aplicacion
-- Eliminar los archivos que se descargaron
