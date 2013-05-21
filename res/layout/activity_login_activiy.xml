@@ -80,11 +80,13 @@
 
     <ImageButton
         android:id="@+id/imageButton_Settings"
-        android:layout_width="@dimen/Minimo"
-        android:layout_height="@dimen/Minimo"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
+        android:background="@drawable/transparent_button"
         android:scaleType="fitCenter"
-        android:src="@drawable/ic_action_settings" />
+        android:src="@drawable/ic_action_settings"
+        tools:ignore="ContentDescription" />
 
 </RelativeLayout>

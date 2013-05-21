@@ -15,21 +15,21 @@
     <string name="GuardarDatos">Recordar</string>
 
     <!-- Strings de ConfigActivity -->
+	<string name="title_activity_config">Configuración</string>
     <string name="RedirigirIngCursos">Redirigir siempre a Ing Cursos</string>
     <string name="ConfigTitle">Opciones</string>
     <string name="UsuariosRecordados">Usuario: </string>
     <string name="action_about">Acerca de</string>
     <string name="AlertDialogTitle">Acerca de</string>
-    <string name="AlertDialogMessage">La idea original de directSiding fue de Pedro Pablo Aste Kompe.\n\n
-        								Estamos en las siguientes plataformas:\n- Chrome: Pedro Pablo Aste Kompe (ppaste@uc.cl)\n- Firefox: Carlos Andrés Molina Avendaño (camolin3@uc.cl)\n- Android: Lukas Zorich (lezorich@uc.cl)\n\n 
+    <string name="AlertDialogMessage">La idea original de directSiding fue de Pedro Pablo Aste Kompen.\n\n
+        								Estamos en las siguientes plataformas:\n- Chrome: Pedro Pablo Aste Kompen (ppaste@uc.cl)\n- Firefox: Carlos Andrés Molina Avendaño (camolin3@uc.cl)\n- Android: Lukas Zorich (lezorich@uc.cl)\n\n 
         								Para noticias y novedades de directSIDING, pueden ir a nuestra página de facebook: www.facebook.com/DirectSiding \n\n
         								Ninguna de las contraseñas es guardada, robada ni nada de esas cosas, trust us.</string>
 
     <!-- Strings de errores -->
     <string name="ErrorConexion">Hubo un error de conexion</string>
     <string name="LoginFailed">Datos de ingreso incorrectos</string>
-    <string name="title_activity_config">Configuracion</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="FileNotFound">No se puede guardar el archivo</string>
 
     <!-- String content desciption -->
     <string name="ImageView_NavBack">Imagen que se usa para regresar al formulario del Login</string>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set android:interpolator="@anim/cycle_7" 
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <translate 
+    android:toXDelta="50"
+    android:fromXDelta="0"
+    android:duration="16000" />
+
+</set>

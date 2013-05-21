@@ -13,7 +13,8 @@
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent" >
 
         <RelativeLayout
             android:id="@+id/RelativeLayout_options"
@@ -92,7 +93,7 @@
                 android:layout_marginLeft="@dimen/EspacioEntreElem"
                 android:layout_marginRight="@dimen/EspacioEntreElem"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:background="@android:color/background_light"
+                android:background="@drawable/transparent_button"
                 android:scaleType="center"
                 android:src="@drawable/ic_delete"
                 android:visibility="invisible" />
@@ -109,8 +110,8 @@
                 android:id="@+id/checkBox_AccAuto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/checkBox_IngCursos"
                 android:layout_below="@id/lineaConfig3"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="@dimen/EspacioEntreElem"
                 android:text="Acceder automáticamente" />
 
