@@ -9,7 +9,7 @@ La idea original de [DirectSIDING][link facebook] fue de [Pedro Pablo Aste Kompe
 Instalar
 --------
 
-La extensión se encuntra disponible para instalar en [Google Play][link google play].
+La aplicación se encuentra disponible para instalar en [Google Play][link google play].
 
 Licencia
 --------
