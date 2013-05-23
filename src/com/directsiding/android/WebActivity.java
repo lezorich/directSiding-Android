@@ -38,6 +38,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -59,6 +60,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -70,7 +72,8 @@ import com.actionbarsherlock.view.Window;
 @SuppressLint("setJavaScriptEnabled")
 public class WebActivity extends SherlockActivity {
 	
-	private WebView webView; 
+	private WebView webView;
+	//private ProgressBar mProgressBar;
 	
 	private NotificationManager mNotifyManager;
 	private NotificationCompat.Builder mBuilder;
@@ -115,6 +118,8 @@ public class WebActivity extends SherlockActivity {
 			CookieSyncManager.getInstance().sync();
 		}
 		
+		//mProgressBar = (ProgressBar)findViewById(R.id.progressBar_webView);
+		
 		// Configuración del web view
 		webView = (WebView)findViewById(R.id.webView_ing);
 		//webView.getSettings().setBuiltInZoomControls(true);
@@ -123,6 +128,7 @@ public class WebActivity extends SherlockActivity {
 		webView.setWebChromeClient(new WebChromeClient() {
 			public void onProgressChanged(WebView view, int progress) {
 				getSherlock().setProgress(progress*100);
+				//mProgressBar.setProgress(progress);
 			}
 		});
 		
@@ -140,31 +146,6 @@ public class WebActivity extends SherlockActivity {
 		// guardamos el tiempo en el que se creo la actividad
 		lastTimeStamp = SystemClock.elapsedRealtime();
 	}
-	
-	/*@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		MenuItem mItem = menu.getItem(0);
-		if (estadoWebView == EstadoWebView.CargandoPagina) 
-		{
-			/*mItem.setVisible(true);
-			Animation rotation = AnimationUtils.loadAnimation(WebActivity.this, R.anim.loading_anim);
-			rotation.setRepeatCount(Animation.INFINITE);
-			loadingImageView.startAnimation(rotation);
-			mItem.setActionView(loadingImageView);
-		}
-		else {
-			View v = mItem.getActionView();
-			if (v != null) {
-				mItem.getActionView().clearAnimation();
-				mItem.setActionView(null);
-			}
-			mItem.setVisible(false);
-			
-		}
-		
-		
-		return true;
-	}*/
 	
 	@Override
 	protected void onResume() {
@@ -226,28 +207,21 @@ public class WebActivity extends SherlockActivity {
     }
     
     private class DirectSidingWebViewClient extends WebViewClient {
-		/* @Override
-		public void onPageStarted(WebView view, String url, android.graphics.Bitmap favicon) {
-			super.onPageFinished(view, url);
-			
-			estadoWebView = EstadoWebView.CargandoPagina;
-			supportInvalidateOptionsMenu();
-			
-			//menu.findItem().setActionView(loadingImageView);
-			
-		}
-		
-		@Override
-		public void onPageFinished(WebView view, String url) {
-			super.onPageFinished(view, url);
-			
-			MenuItem i = menu.findItem(R.id.action_loading);
-			i.setVisible(false);
-			
-			estadoWebView = EstadoWebView.NoCargandoPagina;
-			supportInvalidateOptionsMenu();
-		} */
-		
+    	
+    	/*@Override
+    	public void onPageStarted(WebView view, String url, Bitmap favicon) {
+    		super.onPageStarted(view, url, favicon);
+    		
+    		getSherlock().setProgressBarIndeterminateVisibility(true);
+    	}
+    	
+    	@Override
+    	public void onPageFinished(WebView view, String url) {
+    		super.onPageFinished(view, url);
+    		
+    		getSherlock().setProgressBarIndeterminateVisibility(false);
+    	}*/
+    	
 		@Override
 		public boolean shouldOverrideUrlLoading(WebView view, String url) {
 			if (url.endsWith("logout.phtml")) { // si pone salir en el SIDING, volvemos a la LoginActivity
@@ -333,8 +307,8 @@ public class WebActivity extends SherlockActivity {
 		        
 		        // hacemos la notificacion
 		        mBuilder.setContentText(filename + " - 0.0 Mb");
-		        Intent notificationIntent = new Intent(Intent.ACTION_VIEW);
-		        notificationIntent.setDataAndType(Uri.fromFile(file), urlConnection.getContentType());
+		        Intent notificationIntent = new Intent();
+		        //notificationIntent.setDataAndType(Uri.fromFile(file), urlConnection.getContentType());
 		        PendingIntent pendingIntent = PendingIntent.getActivity(WebActivity.this, 0, notificationIntent, 0);
 		        mBuilder.setContentIntent(pendingIntent);
 		        mNotifyManager.notify(_notifyId, mBuilder.build());
@@ -383,11 +357,11 @@ public class WebActivity extends SherlockActivity {
 	            			.setSmallIcon(downloadAnimationIcons[0])
 	            			.setAutoCancel(true)
 	            			.setProgress(0, 0, false);
-			        /*Intent notificationIntent = new Intent(Intent.ACTION_VIEW);
+			        Intent notificationIntent = new Intent(Intent.ACTION_VIEW);
 			        notificationIntent.setDataAndType(Uri.fromFile(file), result[0]);
 			        PendingIntent pendingIntent = PendingIntent.getActivity(WebActivity.this, 0, notificationIntent, 0);
-			        mBuilder.setContentIntent(pendingIntent);*/
-	            	mNotifyManager.notify(_notifyId, mBuilder.build());
+			        mBuilder.setContentIntent(pendingIntent);
+			        mNotifyManager.notify(_notifyId, mBuilder.build());
 	            	Toast.makeText(WebActivity.this, "Descarga finalizada", Toast.LENGTH_SHORT).show();
 	            }
 			} else {
