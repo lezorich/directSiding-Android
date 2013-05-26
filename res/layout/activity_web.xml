@@ -17,19 +17,18 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. 
  -->
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_color"
+    android:background="@color/Color.SIDING"
     tools:context=".WebActivity" >
 
     <WebView
         android:id="@+id/webView_ing"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/progressBar_webView"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
     <ProgressBar
@@ -37,9 +36,10 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="10dp"
-        android:background="@android:color/background_dark"
+        android:layout_alignParentTop="true"
+        android:background="@color/Color.SIDING"
         android:indeterminate="false"
         android:max="100"
-        android:progress="0" />
+        android:progress="50" />
 
 </RelativeLayout>

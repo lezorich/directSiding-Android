@@ -41,6 +41,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
@@ -51,6 +52,7 @@ import android.text.SpannableString;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.view.animation.RotateAnimation;
 import android.webkit.CookieManager;
@@ -73,7 +75,7 @@ import com.actionbarsherlock.view.Window;
 public class WebActivity extends SherlockActivity {
 	
 	private WebView webView;
-	//private ProgressBar mProgressBar;
+	private ProgressBar mProgressBar;
 	
 	private NotificationManager mNotifyManager;
 	private NotificationCompat.Builder mBuilder;
@@ -90,7 +92,7 @@ public class WebActivity extends SherlockActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		this.requestWindowFeature(Window.FEATURE_PROGRESS);
+		this.requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_web);
 		
 		// Le ponemos la font Signika al titulo del Action Bar
@@ -118,7 +120,7 @@ public class WebActivity extends SherlockActivity {
 			CookieSyncManager.getInstance().sync();
 		}
 		
-		//mProgressBar = (ProgressBar)findViewById(R.id.progressBar_webView);
+		mProgressBar = (ProgressBar)findViewById(R.id.progressBar_webView);
 		
 		// Configuración del web view
 		webView = (WebView)findViewById(R.id.webView_ing);
@@ -127,12 +129,12 @@ public class WebActivity extends SherlockActivity {
 		//webView.setWebViewClient(new WebViewClient());
 		webView.setWebChromeClient(new WebChromeClient() {
 			public void onProgressChanged(WebView view, int progress) {
-				getSherlock().setProgress(progress*100);
-				//mProgressBar.setProgress(progress);
+				//getSherlock().setProgress(progress*100);
+				mProgressBar.setProgress(progress);
 			}
 		});
 		
-		webView.setWebViewClient(new DirectSidingWebViewClient());
+		webView.setWebViewClient(new DirectSidingWebViewClient(this));
 		
 		webView.setDownloadListener(new DownloadListener() {
 			public void onDownloadStart(String url, String userAgent,
@@ -208,11 +210,18 @@ public class WebActivity extends SherlockActivity {
     
     private class DirectSidingWebViewClient extends WebViewClient {
     	
-    	/*@Override
+    	
+    	public DirectSidingWebViewClient(Activity activity) {
+    	}
+    	
+    	@Override
     	public void onPageStarted(WebView view, String url, Bitmap favicon) {
     		super.onPageStarted(view, url, favicon);
     		
     		getSherlock().setProgressBarIndeterminateVisibility(true);
+    		View v = findViewById(R.id.progressBar_webView);
+    		v.setVisibility(View.VISIBLE);
+    		
     	}
     	
     	@Override
@@ -220,7 +229,28 @@ public class WebActivity extends SherlockActivity {
     		super.onPageFinished(view, url);
     		
     		getSherlock().setProgressBarIndeterminateVisibility(false);
-    	}*/
+    		Animation animation = AnimationUtils.loadAnimation((Activity)view.getContext(), R.anim.progressbar_alpha_anim);
+    		animation.setAnimationListener(new AnimationListener() {
+				@Override
+				public void onAnimationEnd(Animation animation) {
+					View v = findViewById(R.id.progressBar_webView);
+					v.setVisibility(View.INVISIBLE);
+				}
+
+				@Override
+				public void onAnimationRepeat(Animation animation) { }
+
+				@Override
+				public void onAnimationStart(Animation animation) { }
+			});
+    		animation.reset();
+    		View v = findViewById(R.id.progressBar_webView);
+
+    		if (v != null) {
+    			v.clearAnimation();
+    			v.startAnimation(animation);
+    		}
+    	}
     	
 		@Override
 		public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -288,6 +318,7 @@ public class WebActivity extends SherlockActivity {
 			lastMilli = SystemClock.elapsedRealtime();
 		}
 
+		@SuppressLint("NewApi")
 		@Override
 		protected String[] doInBackground(String... params) {
 			try{
@@ -301,8 +332,14 @@ public class WebActivity extends SherlockActivity {
 		        urlConnection.connect();
 		        
 		        String aux = urlConnection.getHeaderField("Content-Disposition").split("; ")[1];
-		        String filename = aux.substring("filename=\"".length(), aux.length() - 1);		        
-		        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), filename);
+		        String filename = aux.substring("filename=\"".length(), aux.length() - 1);
+		        
+		        File file = null;
+		        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
+		        	file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), filename);
+		        } else {
+		        	file = new File(Environment.getExternalStorageDirectory() + "Download/", filename);
+		        }
 		        //file.mkdirs(); //nos aseguramos que el directorio existe
 		        
 		        // hacemos la notificacion

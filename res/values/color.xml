@@ -2,4 +2,5 @@
 <resources>
     <color name="foot">#3C000000</color>
     <color name="GrisLinea">#f6f6f6</color>
+    <color name="Color.SIDING">#ffcc33</color>
 </resources>
