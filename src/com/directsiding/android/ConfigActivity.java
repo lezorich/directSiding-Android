@@ -2,20 +2,21 @@
  *  DirectSIDING: Log-in directo al SIDING desde tu dispositivo Android.
  *  La idea original de DirectSIDING fue de Pedro Pablo Aste Kompen.
  *  
-    Copyright (C) 2013  Lukas Zorich
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  Copyright (C) 2013  Lukas Zorich
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package com.directsiding.android;
@@ -23,27 +24,21 @@ package com.directsiding.android;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.util.Base64;
 import android.view.View;
-import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.directsiding.Interfaces.ISharedPrefs;
 
-public class ConfigActivity extends SherlockActivity implements ISharedPrefs {
+public class ConfigActivity extends SherlockActivity {
 	
 	private CheckBox boxIngCursos;
 	private CheckBox boxAccAuto;
@@ -63,13 +58,13 @@ public class ConfigActivity extends SherlockActivity implements ISharedPrefs {
         boxIngCursos = (CheckBox)findViewById(R.id.checkBox_IngCursos);
         boxAccAuto = (CheckBox)findViewById(R.id.checkBox_AccAuto);
         
-        SharedPreferences prefs = getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE);
-        if (prefs.getBoolean(RECORDAR_PREF, false)) {
+        SharedPreferences prefs = getSharedPreferences(DirectSIDING.SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE);
+        if (prefs.getBoolean(DirectSIDING.RECORDAR_PREF, false)) {
         	((ImageButton)findViewById(R.id.ImageButton_delete)).setVisibility(View.VISIBLE);
-        	((TextView)findViewById(R.id.textView_usuario)).setText(prefs.getString(USUARIO_PREF, "UsuarioUc"));
+        	((TextView)findViewById(R.id.textView_usuario)).setText(prefs.getString(DirectSIDING.USUARIO_PREF, "UsuarioUc"));
         	
-    		boxIngCursos.setChecked(prefs.getBoolean(INGCURSOS_PREF, false));
-    		boxAccAuto.setChecked(prefs.getBoolean(ENTRARAUTO_PREF, false));
+    		boxIngCursos.setChecked(prefs.getBoolean(DirectSIDING.INGCURSOS_PREF, false));
+    		boxAccAuto.setChecked(prefs.getBoolean(DirectSIDING.ENTRARAUTO_PREF, false));
         } else {
         	boxIngCursos.setEnabled(false);
         	boxAccAuto.setEnabled(false);
@@ -99,13 +94,13 @@ public class ConfigActivity extends SherlockActivity implements ISharedPrefs {
 	}
 	
 	private void resetUserData(View v) {
-		SharedPreferences prefs = getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE);
+		SharedPreferences prefs = getSharedPreferences(DirectSIDING.SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = prefs.edit();
-		editor.putBoolean(ENTRARAUTO_PREF, false);
-		editor.putBoolean(INGCURSOS_PREF, false);
-		editor.putBoolean(RECORDAR_PREF, false);
-		editor.putString(USUARIO_PREF, "UsuarioUC");
-		editor.putString(PASSWD_PREF, "password");
+		editor.putBoolean(DirectSIDING.ENTRARAUTO_PREF, false);
+		editor.putBoolean(DirectSIDING.INGCURSOS_PREF, false);
+		editor.putBoolean(DirectSIDING.RECORDAR_PREF, false);
+		editor.putString(DirectSIDING.USUARIO_PREF, "UsuarioUC");
+		editor.putString(DirectSIDING.PASSWD_PREF, "password");
 		
 		((TextView)findViewById(R.id.textView_usuario)).setVisibility(View.INVISIBLE);
 		v.setVisibility(View.VISIBLE);
@@ -168,10 +163,10 @@ public class ConfigActivity extends SherlockActivity implements ISharedPrefs {
 	//grabamos la configuracion
 	@Override
 	protected void onPause() {
-		SharedPreferences prefs = getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE);
+		SharedPreferences prefs = getSharedPreferences(DirectSIDING.SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = prefs.edit();
-		editor.putBoolean(INGCURSOS_PREF, boxIngCursos.isChecked());
-		editor.putBoolean(ENTRARAUTO_PREF, boxAccAuto.isChecked());
+		editor.putBoolean(DirectSIDING.INGCURSOS_PREF, boxIngCursos.isChecked());
+		editor.putBoolean(DirectSIDING.ENTRARAUTO_PREF, boxAccAuto.isChecked());
 		editor.commit();
 		
 		super.onPause();

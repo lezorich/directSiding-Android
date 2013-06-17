@@ -24,7 +24,7 @@
     android:background="@color/Color.SIDING"
     tools:context=".WebActivity" >
 
-    <WebView
+    <com.directsiding.android.DirectSIDINGWebView
         android:id="@+id/webView_ing"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -37,9 +37,10 @@
         android:layout_width="match_parent"
         android:layout_height="10dp"
         android:layout_alignParentTop="true"
-        android:background="@color/Color.SIDING"
+        android:background="@android:color/transparent"
         android:indeterminate="false"
         android:max="100"
-        android:progress="50" />
+        android:progress="50"
+        android:progressDrawable="@drawable/progress_horizontal_holo_dark" />
 
 </RelativeLayout>

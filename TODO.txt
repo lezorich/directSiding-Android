@@ -3,3 +3,6 @@ TODO
 - Evitar que las AsyncTasks mueran con la activity (solucionaria el bug del
 	cambio en la orientación)
 - Agregar la progressbar indeterminada con la nueva progress bar determinada.
+
+FIX:
+- Se arreglaron algunos bugs que tenia la aplicación para android 2.1

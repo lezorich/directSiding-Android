@@ -2,20 +2,21 @@
  *  DirectSIDING: Log-in directo al SIDING desde tu dispositivo Android.
  *  La idea original de DirectSIDING fue de Pedro Pablo Aste Kompen.
  *  
-    Copyright (C) 2013  Lukas Zorich
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  Copyright (C) 2013  Lukas Zorich
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package com.directsiding.android;
@@ -25,11 +26,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
+import java.security.KeyStore;
 
+import javax.net.ssl.HttpsURLConnection;
+
+import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.cookie.Cookie;
 
 import android.annotation.SuppressLint;
@@ -40,6 +43,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.net.http.SslError;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -49,19 +53,17 @@ import android.support.v4.app.NavUtils;
 import android.support.v4.app.NotificationCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
-import android.view.animation.RotateAnimation;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.DownloadListener;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -76,17 +78,15 @@ public class WebActivity extends SherlockActivity {
 	
 	private WebView webView;
 	private ProgressBar mProgressBar;
-	
 	private NotificationManager mNotifyManager;
 	private NotificationCompat.Builder mBuilder;
 	
 	private static int actualNotifyId = 0;
 	private static final int LOGOUT_MILI_TIME = 3600000;
-	
 	private static final int[] downloadAnimationIcons = { R.drawable.stat_sys_download_anim0, 
 		R.drawable.stat_sys_download_anim1, R.drawable.stat_sys_download_anim2, R.drawable.stat_sys_download_anim3,
 		R.drawable.stat_sys_download_anim4, R.drawable.stat_sys_download_anim5 };
-
+	
 	private long lastTimeStamp;
 
 	@Override
@@ -121,32 +121,55 @@ public class WebActivity extends SherlockActivity {
 		}
 		
 		mProgressBar = (ProgressBar)findViewById(R.id.progressBar_webView);
-		
-		// Configuración del web view
 		webView = (WebView)findViewById(R.id.webView_ing);
-		//webView.getSettings().setBuiltInZoomControls(true);
+		
+		webViewConfig();
+		webView.loadUrl(url);
+		//webView.loadUrl("http://www.google.com");
+		
+		// guardamos el tiempo en el que se creo la actividad
+		lastTimeStamp = SystemClock.elapsedRealtime();
+		
+	}
+	
+	
+	/**
+	 * Configuración del WebView
+	 */
+	private void webViewConfig() {
+		webView.getSettings().setBuiltInZoomControls(true);
+		
+		// Para HoneyComb o mayor, sacamos los controles del zoom
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			webView.getSettings().setDisplayZoomControls(false);
+		}
+		
 		webView.getSettings().setJavaScriptEnabled(true);
-		//webView.setWebViewClient(new WebViewClient());
 		webView.setWebChromeClient(new WebChromeClient() {
 			public void onProgressChanged(WebView view, int progress) {
-				//getSherlock().setProgress(progress*100);
 				mProgressBar.setProgress(progress);
 			}
 		});
 		
-		webView.setWebViewClient(new DirectSidingWebViewClient(this));
-		
+		webView.setWebViewClient(new DirectSidingWebViewClient());
+
 		webView.setDownloadListener(new DownloadListener() {
 			public void onDownloadStart(String url, String userAgent,
 					String contentDisposition, String mimetype, long contentLength) {
+				
+				String filename = getFileName(contentDisposition);
+				
 				Toast.makeText(WebActivity.this, "Iniciando descarga ...", Toast.LENGTH_SHORT).show();
-				new DownloadFile(WebActivity.actualNotifyId++).execute(url);	
+				new DownloadFile(WebActivity.actualNotifyId++, filename).execute(url);	
+				
 			}
 		});
-		webView.loadUrl(url);
-		
-		// guardamos el tiempo en el que se creo la actividad
-		lastTimeStamp = SystemClock.elapsedRealtime();
+	}
+	
+	private String getFileName(String contentDisposition) {
+        String aux = contentDisposition.split("; ")[1];
+        
+        return aux.substring("filename=\"".length(), aux.length() - 1);
 	}
 	
 	@Override
@@ -208,20 +231,39 @@ public class WebActivity extends SherlockActivity {
     		super.onBackPressed();
     }
     
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		
+		((DirectSIDING) getApplication()).detach(this);
+	}
+	
+	@Override
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		
+		((DirectSIDING) getApplication()).attach(this);
+	}
+    
     private class DirectSidingWebViewClient extends WebViewClient {
     	
-    	
-    	public DirectSidingWebViewClient(Activity activity) {
+    	/**
+    	 * API 8 PARA ARRIBA
+    	 */
+    	@Override
+    	public void onReceivedSslError(WebView view, SslErrorHandler handler,
+    			SslError error) {
+    		handler.proceed();
     	}
-    	
+
     	@Override
     	public void onPageStarted(WebView view, String url, Bitmap favicon) {
     		super.onPageStarted(view, url, favicon);
     		
     		getSherlock().setProgressBarIndeterminateVisibility(true);
     		View v = findViewById(R.id.progressBar_webView);
+    		v.clearAnimation();
     		v.setVisibility(View.VISIBLE);
-    		
     	}
     	
     	@Override
@@ -246,7 +288,7 @@ public class WebActivity extends SherlockActivity {
     		animation.reset();
     		View v = findViewById(R.id.progressBar_webView);
 
-    		if (v != null) {
+    		if (v != null ) {
     			v.clearAnimation();
     			v.startAnimation(animation);
     		}
@@ -284,9 +326,10 @@ public class WebActivity extends SherlockActivity {
 			}
 			return false;
 		}
-	}
+		
+	} 
 	
-	/**
+    /**
 	 * Clase que se encarga de descargar el archivo. El proceso devuelve un String[] de tres elementos. 
 	 * El primer elemento es el tipo de archivo, el segunda es el path en donde se descargo el archivo y el tercero la cantidad descargada.
 	 * @author Lukas Zorich
@@ -297,14 +340,16 @@ public class WebActivity extends SherlockActivity {
 		private int _notifyId;
 		private int icono;
 		private long lastMilli;
+		private String mFileName;
 		private static final int DOWNLOAD_ANIMATION_UPDATE = 500;
 		private static final String ERROR_FILENOTFOUNDEXCEPTION = "FileNotFound";
 		private static final String ERROR_IOEXCEPTION = "IOException";
 		private static final String ERROR = "Error";
 		
-		public DownloadFile(int notifyId) {
+		public DownloadFile(int notifyId, String filename) {
 			this._notifyId = notifyId;
 			icono = 0;
+			mFileName = filename;
 		}
 		
 		@Override
@@ -312,9 +357,16 @@ public class WebActivity extends SherlockActivity {
 			mNotifyManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
 			mBuilder = new NotificationCompat.Builder(WebActivity.this);
 			mBuilder.setContentTitle("Descargando archivo ...")
-					.setContentText("")
+					.setContentText(mFileName + " - 0.0 Mb")
 					.setSmallIcon(downloadAnimationIcons[0])
 					.setProgress(0,0, true);
+			
+	        Intent notificationIntent = new Intent();
+	        //notificationIntent.setDataAndType(Uri.fromFile(file), urlConnection.getContentType());
+	        PendingIntent pendingIntent = PendingIntent.getActivity(WebActivity.this, 0, notificationIntent, 0);
+	        mBuilder.setContentIntent(pendingIntent);
+	        mNotifyManager.notify(_notifyId, mBuilder.build());
+	        
 			lastMilli = SystemClock.elapsedRealtime();
 		}
 
@@ -324,8 +376,9 @@ public class WebActivity extends SherlockActivity {
 			try{
 		        URL url = new URL(params[0]);
 	
-		        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-	
+		        HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
+		        setSSLFactory(urlConnection);
+		        
 		        urlConnection.setRequestMethod("GET");
 		        urlConnection.setDoOutput(true);
 		        urlConnection.addRequestProperty("Cookie", LoginOpActivity.cookie.getName() + "=" + LoginOpActivity.cookie.getValue());
@@ -342,13 +395,13 @@ public class WebActivity extends SherlockActivity {
 		        }
 		        //file.mkdirs(); //nos aseguramos que el directorio existe
 		        
-		        // hacemos la notificacion
+		        /*// hacemos la notificacion
 		        mBuilder.setContentText(filename + " - 0.0 Mb");
 		        Intent notificationIntent = new Intent();
 		        //notificationIntent.setDataAndType(Uri.fromFile(file), urlConnection.getContentType());
 		        PendingIntent pendingIntent = PendingIntent.getActivity(WebActivity.this, 0, notificationIntent, 0);
 		        mBuilder.setContentIntent(pendingIntent);
-		        mNotifyManager.notify(_notifyId, mBuilder.build());
+		        mNotifyManager.notify(_notifyId, mBuilder.build());*/
 		        
 		        FileOutputStream fileOutput = new FileOutputStream(file);
 		        InputStream inputStream = urlConnection.getInputStream();
@@ -420,6 +473,17 @@ public class WebActivity extends SherlockActivity {
 			}
 		}
 		
+		private void setSSLFactory(HttpsURLConnection connection) {
+			try {
+		        KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+		        trustStore.load(null, null);
+	
+		        MySSLSocketFactory sf = new MySSLSocketFactory(trustStore);
+		        sf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+		        
+		        connection.setSSLSocketFactory(sf.getDefaultSocketFactory());
+			} catch (Exception e) { }
+		}
+		
 	}
- 
 }
